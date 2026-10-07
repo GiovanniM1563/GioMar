@@ -8,43 +8,133 @@
   <style>
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #111;
-      color: #ddd;
-      line-height: 1.5;
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      background: #faf9f7;
+      color: #1a1a1a;
+      line-height: 1.55;
     }
-    main { max-width: 36rem; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
-    h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.5rem; }
-    p { margin: 0 0 1rem; color: #bbb; }
-    .muted { color: #888; font-size: 0.95rem; }
+    main { max-width: 38rem; margin: 0 auto; padding: 2.75rem 1.25rem 4rem; }
+    h1 { font-size: 1.65rem; font-weight: 700; margin: 0 0 0.25rem; letter-spacing: -0.02em; }
+    .sub { color: #555; margin: 0 0 1.75rem; font-size: 1rem; }
+    h2 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 2rem 0 0.55rem;
+      color: #333;
+    }
+    p { margin: 0 0 0.9rem; }
+    ul { margin: 0.2rem 0 0.9rem; padding-left: 1.2rem; }
+    li { margin: 0.3rem 0; }
+    figure { margin: 1.25rem 0; }
+    figcaption { font-size: 0.85rem; color: #666; margin-top: 0.4rem; font-style: italic; }
     img {
       display: block;
       width: 100%;
-      max-width: 100%;
       height: auto;
-      margin: 1.25rem 0;
-      border-radius: 6px;
-      border: 1px solid #2a2a2a;
+      border: 1px solid #ddd;
+      background: #fff;
     }
-    a { color: #7dd3fc; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      margin: 0.5rem 0 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.4rem 0.55rem;
+      text-align: left;
+    }
+    th { background: #f0eee9; font-weight: 600; }
+    a { color: #0b57d0; }
+    footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid #ddd; color: #666; font-size: 0.95rem; }
   </style>
 </head>
 <body>
   <main>
     <h1>Percept Mark Zero</h1>
-    <p class="muted">Personal side project.</p>
+    <p class="sub">Giovanni Martinez · fixed-wing operator autonomy in simulation</p>
+
     <p>
-      Playing with a simple operator loop for a small fixed-wing in simulation:
-      loiter, tap something to follow, stop, go home. Mostly learning the
-      flight side and a basic ground panel.
+      I’m building a ground panel and flight layer so a non-pilot can run a
+      small fixed-wing without sticks: the aircraft loiters, you tap a target
+      in the camera to Follow, Stop puts it back in loiter, and link-loss
+      sends it home. The interesting part isn’t the tracker branding — it’s
+      making the <em>airplane</em> do the observation geometry after a human pick.
     </p>
+
+    <h2>What it does now</h2>
+    <ul>
+      <li>Operator loop in sim: Launch → Loiter → Select → Follow → Stop → Return</li>
+      <li>Human picks the object; no automatic target acquisition</li>
+      <li>Stationary pick → orbit / standoff framing at altitude</li>
+      <li>Moving pick → trail behind and to the side; work toward matching pace within the airspeed envelope; S-weave when the target is slower than the plane can fly</li>
+      <li>Stock ArduPlane SITL + Isaac camera scene; onboard-style vision track after the tap</li>
+    </ul>
+
+    <figure>
+      <img src="media/ui-operator.png" alt="Operator workspace" />
+      <figcaption>Operator workspace — Select / Follow / Stop over live sim video.</figcaption>
+    </figure>
+    <figure>
+      <img src="media/ui-map-plan.png" alt="Map and plan view" />
+      <figcaption>Map / plan view with camera footprint context.</figcaption>
+    </figure>
+    <figure>
+      <img src="media/tracking-demo.gif" alt="Tracking follow demo" />
+      <figcaption>Follow after a human tap (sim).</figcaption>
+    </figure>
+
+    <h2>Flight controller behaviors (what I’m excited about)</h2>
     <p>
-      Nothing shipping. Just notes and experiments.
+      After the tap, the aircraft is supposed to fly the geometry: stabilize,
+      hold altitude, orbit or trail, shape speed without asking the operator
+      for stick inputs. Stop is a first-class abort back to loiter — not “keep
+      diving until something else happens.”
     </p>
-    <img src="media/ui-operator.png" alt="Operator panel experiment" />
-    <img src="media/tracking-still.jpg" alt="Tracking still from sim" />
-    <img src="media/simulator-test-scene.png" alt="Sim test scene" />
-    <p class="muted"><a href="mailto:gnoel949@gmail.com">gnoel949@gmail.com</a></p>
+    <table>
+      <thead>
+        <tr><th>Check</th><th>Result (sim)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Stop → Loiter ack (local link)</td><td>~15–16 ms</td></tr>
+        <tr><td>Stop clears tracking (scripted Follow)</td><td>0.844 s</td></tr>
+        <tr><td>Heartbeat loss</td><td>Native return-home (~7.7 s in native interface run)</td></tr>
+        <tr><td>30 s scripted Follow (capture)</td><td>~30.9 fps source · ~29.2 fps preview · window held</td></tr>
+        <tr><td>Stationary framing (example run)</td><td>Altitude error &lt; 0.5 m while holding Follow</td></tr>
+        <tr><td>Bank demand</td><td>~35° limit; roll-rate demand capped in SITL tuning</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Variable airspeed toward a moving target is in the controller — matching
+      pace when it can, weaving when it can’t hover. Speed-request shaping is
+      still an active experiment (pitch coupling under aggressive accel/brake
+      patterns); I’m treating that as open work, not done.
+    </p>
+
+    <figure>
+      <img src="media/simulator-test-scene.png" alt="Isaac sim scene" />
+      <figcaption>Isaac test scene used for Follow / framing runs.</figcaption>
+    </figure>
+    <figure>
+      <img src="media/crossing-terminal.png" alt="Recovery / crossing still" />
+      <figcaption>Track continuity / recovery still from the research runs.</figcaption>
+    </figure>
+
+    <h2>Where I want it to go</h2>
+    <ul>
+      <li>Same loop on a real fixed-wing (not just SITL)</li>
+      <li>Cleaner trail / pace match without exciting pitch</li>
+      <li>Human tap in the loop end-to-end, not only scripted Select</li>
+      <li>Later: same operator behaviors on other platform types — FW first</li>
+    </ul>
+
+    <footer>
+      Notes from the intairv2 sim workstream.<br />
+      <a href="mailto:gnoel949@gmail.com">gnoel949@gmail.com</a>
+    </footer>
   </main>
 </body>
 </html>
