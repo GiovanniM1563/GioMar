@@ -4,212 +4,47 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Percept Mark Zero</title>
-  <meta name="description" content="Personal side project: select something in the camera, follow it in simulation, cancel back to loiter." />
   <meta name="robots" content="noindex,nofollow" />
   <style>
-    :root {
-      --bg: #0b1218;
-      --fg: #e8eaed;
-      --muted: #9aa3ad;
-      --accent: #9ad5c0;
-      --border: #24303a;
-      --card: #121a22;
-    }
-    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.55;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #111;
+      color: #ddd;
+      line-height: 1.5;
     }
-    main {
-      max-width: 42rem;
-      margin: 0 auto;
-      padding: 2.5rem 1.25rem 4rem;
-    }
-    h1 {
-      font-size: 1.7rem;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-      margin: 0 0 0.35rem;
-    }
-    .tagline {
-      color: var(--muted);
-      margin: 0 0 1.5rem;
-      font-size: 1.05rem;
-    }
-    h2 {
-      font-size: 1rem;
-      font-weight: 650;
-      margin: 2rem 0 0.6rem;
-      color: var(--accent);
-    }
-    p { margin: 0 0 0.85rem; }
-    ul {
-      margin: 0.25rem 0 0.85rem;
-      padding-left: 1.15rem;
-    }
-    li { margin: 0.35rem 0; }
-    a { color: var(--accent); }
-    figure {
-      margin: 1.25rem 0;
-      padding: 0;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    figure img {
+    main { max-width: 36rem; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+    h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.5rem; }
+    p { margin: 0 0 1rem; color: #bbb; }
+    .muted { color: #888; font-size: 0.95rem; }
+    img {
       display: block;
       width: 100%;
+      max-width: 100%;
       height: auto;
+      margin: 1.25rem 0;
+      border-radius: 6px;
+      border: 1px solid #2a2a2a;
     }
-    figcaption {
-      padding: 0.65rem 0.85rem 0.8rem;
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.4;
-    }
-    .grid {
-      display: grid;
-      gap: 1rem;
-    }
-    @media (min-width: 640px) {
-      .grid.two { grid-template-columns: 1fr 1fr; }
-    }
-    footer {
-      margin-top: 2.5rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-    footer p { margin: 0.35rem 0; }
+    a { color: #7dd3fc; }
   </style>
 </head>
 <body>
   <main>
     <h1>Percept Mark Zero</h1>
-    <p class="tagline">A personal side project: visual perception and camera-guided flight around an operator’s selection.</p>
-
+    <p class="muted">Personal side project.</p>
     <p>
-      Launch into loiter, look around with the gimbal, tap something in the
-      camera view, and press Follow when a fresh track is ready. Stop clears
-      the selection and returns to loiter; Home requests return-to-launch.
-      The research stack lives under intair / PRCEPT; this page is Mark Zero
-      as it stands in simulation.
-    </p>
-
-    <figure>
-      <img src="media/ui-operator.png" alt="Live operator panel over Zurich Irchel with camera view, map labels for Aircraft and Home, and estimated camera footprint" width="1200" height="1280" />
-      <figcaption>Live ArduPlane + Isaac session over Zurich Irchel. Camera looking at the loiter area; amber outline is the estimated ground view beside labeled Aircraft and Home.</figcaption>
-    </figure>
-
-    <h2>What the demo does</h2>
-    <p>
-      A browser ground station talks to stock ArduPlane SITL and an Isaac-rendered
-      camera scene. Two workspaces:
-    </p>
-    <ul>
-      <li><strong>Operate</strong> — camera, map, selection, Follow, Stop, and return.</li>
-      <li><strong>Engineer</strong> — mission planning, fences, parameters, telemetry, logs, replay, and checklists (writes limited to the launcher-owned simulator).</li>
-    </ul>
-    <p>
-      The map labels Aircraft and Home, with a footprint and viewing line for the
-      camera’s estimated ground view. Map-scale testing uses a prepared
-      <strong>Zurich Irchel</strong> environment (terrain, aerial imagery, buildings,
-      roads, simulated traffic). Procedural practice scenes remain for day-to-day
-      development.
-    </p>
-
-    <div class="grid two">
-      <figure>
-        <img src="media/ui-map-plan.png" alt="Engineer mission planning showing the full Zurich Irchel test environment" width="960" height="720" />
-        <figcaption>Zurich Irchel test environment and mission planning.</figcaption>
-      </figure>
-      <figure>
-        <img src="media/ui-engineer.png" alt="Engineer workspace with live aircraft attitude and telemetry" width="960" height="720" />
-        <figcaption>Live aircraft telemetry in the Engineer workspace.</figcaption>
-      </figure>
-    </div>
-
-    <div class="grid two">
-      <figure>
-        <img src="media/simulator-test-scene.png" alt="Isaac simulation camera view of the test scene" width="960" height="720" />
-        <figcaption>Simulation camera view.</figcaption>
-      </figure>
-      <figure>
-        <img src="media/test-environment-map.png" alt="Full Zurich Irchel test map in the ground station" width="960" height="720" />
-        <figcaption>Full test map panel.</figcaption>
-      </figure>
-    </div>
-
-    <h2>How the pieces fit</h2>
-    <ul>
-      <li><strong>Ground station</strong> — browser UI, operator commands, planning, telemetry.</li>
-      <li><strong>Aircraft runtime</strong> — camera ingestion, visual tracking, guidance, aircraft link.</li>
-      <li><strong>EdgeTAM / SUPERTAM</strong> — human-prompted segmentation; sim defaults to plain EdgeTAM; an earlier guarded profile remains for external-autopilot sessions.</li>
-      <li><strong>Stock ArduPlane</strong> — dynamics, navigation, stabilization, native failsafes.</li>
-      <li><strong>Isaac Sim</strong> — GPU scenery and controlled camera imagery.</li>
-    </ul>
-    <p>
-      Tracking starts from a human selection — no automatic target pick. Guidance
-      uses visual observations and own-aircraft navigation; simulated target truth
-      stays reserved for evaluation. Stop, freshness checks, and link-loss handling
-      are part of the control lifecycle. Camera-aware course / airspeed / gimbal
-      planning modes stay opt-in while repeatability is evaluated.
-    </p>
-
-    <figure>
-      <img src="media/tracking-demo.gif" alt="Simulated tracking overlay sequence on a selected vehicle" width="640" height="480" />
-      <figcaption>Earlier Isaac viewfinder with tracker-mask overlays (sampled frames from a recorded demo; playback is not camera or inference FPS).</figcaption>
-    </figure>
-
-    <h2>Where things stand</h2>
-    <p>
-      Operator workflow, ground station, perception runtime, and native autopilot
-      integration are connected in simulation. Focus now is consistent
-      selected-object tracking, dependable flight and camera coordination,
-      acquisition responsiveness, and useful observation over longer runs.
+      Playing with a simple operator loop for a small fixed-wing in simulation:
+      loiter, tap something to follow, stop, go home. Mostly learning the
+      flight side and a basic ground panel.
     </p>
     <p>
-      Recent single-object studies separate visual tracking quality from flight
-      and view-feasibility failures. Good development runs sit alongside
-      unresolved continuity and repeatability limits. Experimental controller
-      and transport changes remain optional.
+      Nothing shipping. Just notes and experiments.
     </p>
-
-    <div class="grid two">
-      <figure>
-        <img src="media/reel-preview.png" alt="Same-object recovery held for about 35 seconds" width="960" height="720" />
-        <figcaption>Earlier recovery evidence: same-object hold ~35&nbsp;s at 18&nbsp;m/s (scripted).</figcaption>
-      </figure>
-      <figure>
-        <img src="media/fresh-recovery.png" alt="Bar chart of Follow duration after fresh selection" width="1200" height="640" />
-        <figcaption>Follow duration after fresh selection across scripted recoveries.</figcaption>
-      </figure>
-    </div>
-
-    <h2>Still open</h2>
-    <ul>
-      <li>Human-operated qualification and crowded real-world identity.</li>
-      <li>Real camera / gimbal integration and embedded performance.</li>
-      <li>Physical board, radio, RC bench, and outdoor flight.</li>
-      <li>Longer-run continuity beyond scripted fixtures.</li>
-    </ul>
-
-    <h2>Intent</h2>
-    <p>
-      Practice the observation loop: find, hold, follow, cancel. Stock ArduPlane
-      underneath; a thin operator UI on top. Hardware comes after the sim path
-      is honest.
-    </p>
-
-    <footer>
-      <p><a href="mailto:gnoel949@gmail.com">gnoel949@gmail.com</a></p>
-      <p><a href="https://github.com/GiovanniM1563/GioMar">github.com/GiovanniM1563/GioMar</a></p>
-    </footer>
+    <img src="media/ui-operator.png" alt="Operator panel experiment" />
+    <img src="media/tracking-still.jpg" alt="Tracking still from sim" />
+    <img src="media/simulator-test-scene.png" alt="Sim test scene" />
+    <p class="muted"><a href="mailto:gnoel949@gmail.com">gnoel949@gmail.com</a></p>
   </main>
 </body>
 </html>
