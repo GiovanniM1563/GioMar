@@ -1,3 +1,3 @@
 # Percept Mark Zero
 
-Side-project landing page.
+Public landing page for a personal simulation side project (GitHub Pages).
