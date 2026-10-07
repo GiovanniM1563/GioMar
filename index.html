@@ -4,15 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Percept Mark Zero</title>
-  <meta name="description" content="Personal build: kit-sized fixed-wing for non-pilot Select / Follow / Cancel." />
+  <meta name="description" content="Personal side project: Select / Follow / Cancel for a kit-sized fixed-wing in simulation." />
   <meta name="robots" content="noindex,nofollow" />
   <style>
     :root {
-      --bg: #0f1115;
+      --bg: #0b1218;
       --fg: #e8eaed;
-      --muted: #9aa0a6;
-      --accent: #7dd3fc;
-      --border: #2a2f3a;
+      --muted: #9aa3ad;
+      --accent: #9ad5c0;
+      --border: #24303a;
+      --card: #121a22;
     }
     * { box-sizing: border-box; }
     body {
@@ -23,25 +24,32 @@
       line-height: 1.55;
     }
     main {
-      max-width: 40rem;
+      max-width: 42rem;
       margin: 0 auto;
-      padding: 3rem 1.25rem 4rem;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    .banner {
+      display: block;
+      width: 100%;
+      max-width: 28rem;
+      height: auto;
+      margin: 0 0 1.5rem;
     }
     h1 {
-      font-size: 1.75rem;
+      font-size: 1.7rem;
       font-weight: 650;
       letter-spacing: -0.02em;
       margin: 0 0 0.35rem;
     }
     .tagline {
       color: var(--muted);
-      margin: 0 0 2rem;
+      margin: 0 0 1.5rem;
       font-size: 1.05rem;
     }
     h2 {
       font-size: 1rem;
       font-weight: 650;
-      margin: 2rem 0 0.5rem;
+      margin: 2rem 0 0.6rem;
       color: var(--accent);
     }
     p { margin: 0 0 0.85rem; }
@@ -49,8 +57,34 @@
       margin: 0.25rem 0 0.85rem;
       padding-left: 1.15rem;
     }
-    li { margin: 0.25rem 0; }
+    li { margin: 0.35rem 0; }
     a { color: var(--accent); }
+    figure {
+      margin: 1.25rem 0;
+      padding: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    figcaption {
+      padding: 0.65rem 0.85rem 0.8rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .grid.two { grid-template-columns: 1fr 1fr; }
+    }
     footer {
       margin-top: 2.5rem;
       padding-top: 1.25rem;
@@ -58,50 +92,107 @@
       color: var(--muted);
       font-size: 0.95rem;
     }
+    footer p { margin: 0.35rem 0; }
   </style>
 </head>
 <body>
   <main>
+    <img class="banner" src="media/prcept-banner.svg" alt="PRCEPT" width="921" height="302" />
     <h1>Percept Mark Zero</h1>
-    <p class="tagline">A kit-sized fixed-wing a non-pilot can run.</p>
+    <p class="tagline">A personal side project toward a kit-sized fixed-wing a non-pilot can run for observation and search practice.</p>
 
     <p>
-      Loiter over an area, tap a person or animal on video to Follow,
-      Cancel back to loiter, and keep a safe flight plan if the link drops.
-      No sticks. No goggles. Confirm and cancel only.
+      Loiter over an area, tap something on the video to Follow, Cancel back to
+      loiter, and keep a safe flight plan if the link drops. The research stack
+      also goes by PRCEPT / intair; this page tracks Mark Zero as it stands in simulation.
     </p>
 
-    <h2>Why</h2>
-    <p>
-      Most public-safety and search-and-rescue drones are quads flown by
-      collateral Part 107 pilots. Agencies already own aircraft; the bottleneck
-      is operators, training, and VLOS/BVLOS friction—not airframe count.
-      Fixed wing covers more ground, but once you find someone there is no
-      simple non-pilot way to hold or follow without a skilled pilot on the sticks.
-    </p>
+    <figure>
+      <img src="media/tracking-demo.gif" alt="Simulated tracking overlay sequence on a selected vehicle" width="640" height="480" />
+      <figcaption>Isaac Sim viewfinder with tracker-mask overlays (sampled frames from a recorded demo run; playback is not camera or inference FPS).</figcaption>
+    </figure>
 
-    <h2>What I’m building</h2>
+    <h2>What works in sim today</h2>
     <ul>
-      <li>Loiter → Select → Follow → Cancel / Return</li>
-      <li>Onboard vision track so the aircraft can keep the follow when ground video is bad</li>
-      <li>Stock ArduPlane + a thin operator UI</li>
-      <li>Observation / practice first: search, hold, watch</li>
+      <li>Operator loop: Select → Follow → Stop / Cancel, plus Loiter and Home, in a ground panel over stock ArduPlane SITL.</li>
+      <li>Perception path: human-prompted EdgeTAM (plain profile in the simulator); earlier guarded SUPERTAM recovery work is preserved separately.</li>
+      <li>Isaac Sim camera + GPU H.264 preview into the browser panel; Stop cleared tracking in under a second on the measured scripted Follow fixture.</li>
+      <li>GCS milestones on ArduPlane 4.6.3 SITL: connection/HUD/modes, mission planning, parameters/setup, logs/replay, video/tracking, and operator tools.</li>
+      <li>Recovery / re-prompt studies on synthetic crossings: same-car Follow after fresh selection held a 30&nbsp;s window on most scripted cases; checkers and limits are documented with the flights.</li>
     </ul>
 
-    <h2>Who it’s for</h2>
+    <figure>
+      <img src="media/tracking-still.jpg" alt="Still from the Isaac tracking demo" width="960" height="720" />
+      <figcaption>Still from the curated demo set — procedural Isaac scene, selected vehicle under track.</figcaption>
+    </figure>
+
+    <h2>Measured on one scripted Follow fixture</h2>
     <p>
-      Thin SAR teams, wildland agencies, and conservation groups that need
-      longer endurance than a quad and can’t staff another remote pilot for every flight.
+      On an RTX 5080, 960×720, four-subframe Isaac path with simultaneous tracking
+      and GPU encode: a complete 30-second scripted Follow held at about
+      <strong>30.9</strong> source-capture fps (minimum three-second rate 30.0) and
+      <strong>29.2</strong> delivered preview fps; Stop cleared tracking in
+      <strong>0.844&nbsp;s</strong>. A longer continuity attempt stopped around
+      47&nbsp;s on the existing rival-overlap gate — 60&nbsp;s Follow is not claimed.
+      These are limited development comparisons on a known fixture, not human-tap
+      or all-scene qualification.
     </p>
 
-    <h2>Status</h2>
+    <h2>Recovery evidence</h2>
     <p>
-      Side project with a friend. Sim work in progress
-      (Select / Follow / Cancel + link-loss behavior). Hardware on the bench.
+      Scripted east/west recoveries at 12 and 18&nbsp;m/s exercised Stop-to-Follow
+      again after crossings. Under the earlier checker the pack scored 7/8;
+      with the later pixel-cell checker the same flights read 8/8. Same-capture
+      neural re-prompt controls (unchanged model weights) show rejected proposals
+      repaired to verified masks on recorded CUDA transactions — that is repair
+      evidence, not a claim of live sustained Follow on every scene.
+    </p>
+
+    <div class="grid two">
+      <figure>
+        <img src="media/reel-preview.png" alt="Same-car recovery held for 35 seconds at 18 m/s" width="960" height="720" />
+        <figcaption>Source-frame evidence: same-car recovery held ~35&nbsp;s at 18&nbsp;m/s.</figcaption>
+      </figure>
+      <figure>
+        <img src="media/crossing-terminal.png" alt="Crossing terminal with evaluator box and rejected mask" width="1000" height="450" />
+        <figcaption>Crossing terminal: evaluator box and a rejected mask on the selected car.</figcaption>
+      </figure>
+    </div>
+
+    <figure>
+      <img src="media/correction-controls.png" alt="Rejected proposals versus verified neural re-prompt masks" width="1198" height="1400" />
+      <figcaption>Same-capture repair controls — rejected original proposals (red) vs verified re-prompt masks (green). Recorded CUDA transactions.</figcaption>
+    </figure>
+
+    <div class="grid two">
+      <figure>
+        <img src="media/fresh-recovery.png" alt="Bar chart of Follow duration after fresh selection" width="1200" height="640" />
+        <figcaption>Follow duration after fresh selection across eight scripted recoveries (30&nbsp;s window).</figcaption>
+      </figure>
+      <figure>
+        <img src="media/terminal-evidence.png" alt="Terminal rejection diagnostics with overlay boxes" width="1000" height="700" />
+        <figcaption>Terminal rejection diagnostics — proposals inspected against identity and crowding gates.</figcaption>
+      </figure>
+    </div>
+
+    <h2>Still open</h2>
+    <ul>
+      <li>Physical board / radio / RC bench and real outdoor flight.</li>
+      <li>Human tap performance and crowded real-world identity.</li>
+      <li>Sustained 60&nbsp;fps capture and all-scene Follow robustness.</li>
+      <li>Flight-controller continuity work beyond the scripted recovery packs — recent candidate runs are research modes, not the product default.</li>
+    </ul>
+
+    <h2>Intent</h2>
+    <p>
+      Practice the observation loop for search and watch: find, hold, follow,
+      cancel. Stock ArduPlane underneath; thin operator UI on top. Hardware is
+      on the bench after the sim path is honest.
     </p>
 
     <footer>
-      <a href="mailto:gnoel949@gmail.com">gnoel949@gmail.com</a>
+      <p><a href="mailto:gnoel949@gmail.com">gnoel949@gmail.com</a></p>
+      <p><a href="https://github.com/GiovanniM1563/GioMar">github.com/GiovanniM1563/GioMar</a></p>
     </footer>
   </main>
 </body>
